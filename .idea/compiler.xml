@@ -6,8 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Test-maven-project" />
+        <module name="BebsMaven" />
+        <module name="BasicAPIchecks" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="com.bebs" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>
