@@ -1,7 +1,4 @@
-import groovyjarjarpicocli.CommandLine;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.ArrayList;
@@ -12,15 +9,11 @@ import static io.restassured.RestAssured.*;
 
 
 public class GeneralApiChecks {
-    private final static String BASE_URL = "https://reqres.in/";
-    private static final String EMAIL = "eve.holt@reqres.in";
-    private static final String PASSWORD = "pistol";
-    private static final String emailGenerated = RandomStringUtils.random(6,true,true);
-    private static final String errorMessage = "Missing password";
+
 
     @Test
     public void checkEmailEndsWithDomain() {
-        Specifications.installSpecification(Specifications.reqSpec(BASE_URL),Specifications.rsSpecCode200OK());
+        Specifications.installSpecification(Specifications.reqSpec(TestData.BASE_URL),Specifications.rsSpecCode200OK());
         Integer page = 1;
         Integer totalPages;
 
@@ -53,18 +46,20 @@ public class GeneralApiChecks {
 
     @Test
     public void userRegistrationSuccess (){
-        Specifications.installSpecification(Specifications.reqSpec(BASE_URL),Specifications.rsSpecCode200OK());
+        Specifications.installSpecification(Specifications.reqSpec(TestData.BASE_URL),Specifications.rsSpecCode200OK());
         Integer expectedId = 4;
         String expectedToken = "QpwL5tke4Pnpja7X4";
 
 
-        UserRegistrationBody user = new UserRegistrationBody(EMAIL, PASSWORD);
+        UserRegistrationBody user = new UserRegistrationBody(TestData.EMAIL, TestData.PASSWORD);
         SuccessRegResponse response = given()
                 .body(user).log().body()
                 .when()
                 .post("api/register")
                 .then().log().status().log().body()
                 .extract().as(SuccessRegResponse.class);
+        Assert.assertNotNull(response.getId());
+        Assert.assertNotNull(response.getToken());
 
         Assert.assertEquals(expectedId, response.getId());
         Assert.assertEquals(expectedToken, response.getToken());
@@ -73,10 +68,10 @@ public class GeneralApiChecks {
 
     @Test
     public void registrationFailCheck (){
-        Specifications.installSpecification(Specifications.reqSpec(BASE_URL),Specifications.resSpecCodeError400());
+        Specifications.installSpecification(Specifications.reqSpec(TestData.BASE_URL),Specifications.resSpecCodeError400());
 
 
-        UserRegistrationBody user = new UserRegistrationBody(emailGenerated,"");
+        UserRegistrationBody user = new UserRegistrationBody(TestData.emailGenerated,"");
 
         UnsuccessRegResponse error = given()
                 .body(user).log().body()
@@ -85,8 +80,31 @@ public class GeneralApiChecks {
                 .then().log().status().log().body()
                 .extract().as(UnsuccessRegResponse.class);
 
-        Assert.assertEquals(errorMessage,error.getError());
+        Assert.assertEquals(TestData.errorMessage,error.getError());
         System.out.println("Not registered without password - OK");
         System.out.println("qa branch created");
+    }
+
+    @Test
+    public void yearsSorted(){
+        Specifications.installSpecification(Specifications.reqSpec(TestData.BASE_URL), Specifications.rsSpecCode200OK());
+
+        List<ListOfColors> colorsByYears = new ArrayList<>();
+
+        colorsByYears = given()
+                .when()
+                .get("api/unknown")
+                .then().log().body()
+                .extract().body().jsonPath().getList("data", ListOfColors.class);
+
+        List<Integer> years = colorsByYears.stream().map(ListOfColors::getYear).toList();
+        List<Integer> sortedYears = years.stream().sorted().toList();
+
+        Assert.assertEquals(sortedYears,years);
+        System.out.println("Received list is sorted by years");
+
+        int z = 0;
+
+
     }
 }
