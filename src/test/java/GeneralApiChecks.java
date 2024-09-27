@@ -87,5 +87,6 @@ public class GeneralApiChecks {
 
         Assert.assertEquals(errorMessage,error.getError());
         System.out.println("Not registered without password - OK");
+        System.out.println("qa branch created");
     }
 }
