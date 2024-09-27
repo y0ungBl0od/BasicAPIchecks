@@ -3,7 +3,7 @@ public class UserRegistrationBody {
     private String password;
 
     public UserRegistrationBody(String email, String password) {
-        this.email = email;
+        this.email = String.valueOf(email);
         this.password = password;
     }
 
