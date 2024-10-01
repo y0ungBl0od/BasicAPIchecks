@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static io.restassured.RestAssured.*;
 
 
-public class GeneralApiChecks {
+public class GeneralApiChecksPOJO {
 
 
     @Test
