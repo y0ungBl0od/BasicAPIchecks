@@ -8,10 +8,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="BebsMaven" />
         <module name="BasicAPIchecks" />
+        <module name="com.bebs" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="com.bebs" target="19" />
-    </bytecodeTargetLevel>
   </component>
 </project>
