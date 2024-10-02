@@ -65,13 +65,14 @@ public class GeneralApiChecksNoPOJO extends TestData{
         Map<String, String> userInput = new HashMap<>();
         userInput.put("email", TestData.EMAIL);
         userInput.put("password", TestData.PASSWORD);
-        ValidatableResponse response = given()
+        ValidatableResponse response = (ValidatableResponse) given()
                 .body(userInput)
                 .when()
                 .post("api/register")
                 .then().log().status().log().body()
-                .body("id", equalTo(4))
-                .body("token", equalTo(expectedToken));
+                .body("id", equalTo(4))             //удалить при альтерантивном методе
+                .body("token", equalTo(expectedToken))      // удалить при альтерантивном методе
+                .extract().response();
 
 //  Альтернативно через Assert
 
@@ -82,8 +83,26 @@ public class GeneralApiChecksNoPOJO extends TestData{
 //
 //        Assert.assertEquals(expectedToken,tokenReceived);
 //        Assert.assertEquals(4,idReceived);
-
     }
 
+    @Test
+    public void unsucRegNoPojo(){
+        Specifications.installSpecification(Specifications.reqSpec(BASE_URL),Specifications.rsSpecCodeUnique(400));
+        Map<String, String> userInput = new HashMap<>();
+        userInput.put("email",TestData.emailGenerated);
+
+        Response response = given()
+                .body(userInput).log().body()
+                .when()
+                .post("api/register")
+                .then().log().body()
+                .body("error",equalTo(TestData.errorMessage))
+                .extract().response();
+
+        JsonPath jsonPath = response.jsonPath();
+        String error = jsonPath.get("error");
+        Assert.assertEquals(TestData.errorMessage,error);
+
+    }
 }
 
