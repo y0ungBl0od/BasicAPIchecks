@@ -1,5 +1,6 @@
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,7 +9,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
@@ -50,9 +53,35 @@ public class GeneralApiChecksNoPOJO extends TestData{
         while (page <= totalPages);
 
         Assert.assertTrue(allEmails.stream().allMatch(x->x.endsWith("@reqres.in")));
+        System.out.println(String.join("\n", allEmails));
 
+    }
 
-        int z = 0;
+    @Test
+    public void succesRegistration(){
+        Specifications.installSpecification(Specifications.reqSpec(BASE_URL), Specifications.rsSpecCode200OK());
+        String expectedToken = "QpwL5tke4Pnpja7X4";
+
+        Map<String, String> userInput = new HashMap<>();
+        userInput.put("email", TestData.EMAIL);
+        userInput.put("password", TestData.PASSWORD);
+        ValidatableResponse response = given()
+                .body(userInput)
+                .when()
+                .post("api/register")
+                .then().log().status().log().body()
+                .body("id", equalTo(4))
+                .body("token", equalTo(expectedToken));
+
+//  Альтернативно через Assert
+
+//        JsonPath jsonPath = response.extract().jsonPath();
+//
+//        int idReceived = jsonPath.getInt("id");
+//        String tokenReceived = jsonPath.get("token");
+//
+//        Assert.assertEquals(expectedToken,tokenReceived);
+//        Assert.assertEquals(4,idReceived);
 
     }
 
