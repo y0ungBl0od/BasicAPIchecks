@@ -114,7 +114,7 @@ public class GeneralApiChecksPOJO {
 
     @Test
     public void deleteUserCheck() {
-        Specifications.installSpecification(Specifications.reqSpec(TestData.BASE_URL), Specifications.rsSpecCodeUnique(204));
+        Specifications.installSpecification(Specifications.reqSpec(TestData.BASE_URL), Specifications.rsSpecCodeManual(204));
 
             given()
                 .when()

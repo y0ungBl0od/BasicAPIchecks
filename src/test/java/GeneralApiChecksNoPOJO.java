@@ -1,26 +1,22 @@
+import groovyjarjarpicocli.CommandLine;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.requestSpecification;
 import static org.hamcrest.Matchers.*;
 
 
 public class GeneralApiChecksNoPOJO extends TestData{
     Integer page = 1;
+
     Integer totalPages;
     @Test
     public void checkAvatarsNoPojo () {
@@ -87,7 +83,7 @@ public class GeneralApiChecksNoPOJO extends TestData{
 
     @Test
     public void unsucRegNoPojo(){
-        Specifications.installSpecification(Specifications.reqSpec(BASE_URL),Specifications.rsSpecCodeUnique(400));
+        Specifications.installSpecification(Specifications.reqSpec(BASE_URL),Specifications.rsSpecCodeManual(400));
         Map<String, String> userInput = new HashMap<>();
         userInput.put("email",TestData.emailGenerated);
 
@@ -102,7 +98,6 @@ public class GeneralApiChecksNoPOJO extends TestData{
         JsonPath jsonPath = response.jsonPath();
         String error = jsonPath.get("error");
         Assert.assertEquals(TestData.errorMessage,error);
-
     }
 }
 

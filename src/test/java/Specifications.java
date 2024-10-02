@@ -23,7 +23,7 @@ public class Specifications {
                 .expectStatusCode(400)
                 .build();
     }
-    public static ResponseSpecification rsSpecCodeUnique(int status){
+    public static ResponseSpecification rsSpecCodeManual(int status){
         return new ResponseSpecBuilder()
                 .expectStatusCode(status)
                 .build();
